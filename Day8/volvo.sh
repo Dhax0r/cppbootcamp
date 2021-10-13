@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/env bash
 
 wget https://en.wikipedia.org/wiki/Volvo_Cars
 

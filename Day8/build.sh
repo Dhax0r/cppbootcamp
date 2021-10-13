@@ -1,4 +1,4 @@
-# !/bin/bash
+# !/bin/env bash
 
 pushd ../Day1/Assignment_1
 
