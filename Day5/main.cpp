@@ -1,30 +1,24 @@
-class Shape {
-    
-  public:
-    Shape(const int &a, const int &p):area_(a),perimeter_(p){}
-    virtual ~Shape() = 0;
-  private:
-    int area_;
-    int perimeter_;
-};
-class Circle : public Shape {
-  public:
-    Circle(int &r) : Shape(3 * r * r, 2 * r *3) {}
-    ~Circle() = default;
+#include "shape.hpp"
+#include <iostream>
 
-};
-class Triangle : public Shape {
-  public:
-    Triangle(const int &w, const int &h) : Shape(w * h / 2, 3 * h) {}
-    ~Triangle() = default;
-};
-class Square : public Shape {
-  public:
-    Square(const int &w, const int &h) : Shape(w * h, 2 * h + 2 * w) {}
-    ~Square() = default;  
-};
-class Rectangle : public Shape {
-  Rectangle(const int &w, const int &h) : Shape(w * h, 2 * h + 2 * w) {}
-  ~Rectangle() = default;
-  
-};
+int main(int, char*[]){
+
+  Circle c(3);
+  Rectangle r(4,5);
+  Square s(6,6);
+  Rectangle r2(6,6);
+  Shape *ptr[] = {&c, &r, &s, &r2};
+
+  for (size_t j = 0; j < 3; j++){
+    for(size_t k = j+1; k < 4; k++) {
+      std::cout << "j: ";
+      ptr[j]->Print();
+      std::cout << "k: ";
+      ptr[k]->Print();
+      std::cout << "j is equal to k " << std::boolalpha << (*ptr[j] == *ptr[k]) << std::endl;
+      std::cout << "j is greater than k " << std::boolalpha << (*ptr[j] > *ptr[k]) << std::endl;
+      std::cout << "j is less than k " << std::boolalpha << (*ptr[j] < *ptr[k]) << std::endl;
+    }
+  }
+  return 0;
+}
