@@ -5,16 +5,16 @@ size_t upper = 128;
 size_t lower = 1;
 
 char answer;
-int middle = lower + (upper - lower) / 2;
-while(lower != upper) {
-std::cout << "Is the number less or equal to " << upper;
+int middle = (upper + lower) / 2;
+while(lower <= upper) {
+std::cout << "Is the number less or equal to " << middle;
 std::cin >> answer;
 
   if (answer == 'y'){
-    upper = upper/2;
+    upper = middle - 1;
   } else {
-    lower = upper;
-    upper *= 2;
+    lower = middle + 1;
+    
   }
   middle = (upper + lower) / 2;
 }
