@@ -12,7 +12,8 @@ void Print(const int grid[9][9]) {
     }
 }
 
-void Print(const Cell_t inner_state[9][9]) {
+
+void Print(const std::vector<std::vector<Cell_t>> &inner_state) {
   
     for (size_t i = 0; i < 9; i++){
         for (size_t j = 0; j < 9; j++) {

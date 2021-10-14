@@ -2,11 +2,11 @@
 #include <iostream>
 #include <iomanip>
 
-void InitInner(Cell_t inner_state[9][9],const int grid[9][9]){
+void InitInner(std::vector<std::vector<Cell_t>> &inner_state, const int grid[9][9]){
     int m = 0;
     while (m < 100 && !IsSolved(inner_state)) {
-        for (size_t i = 0; i < 9; i++) {
-            for (size_t j = 0; j < 9; j++) {
+        for (size_t i = 0; i < inner_state.size(); i++) {
+            for (size_t j = 0; j < inner_state[0].size(); j++) {
                 int value = grid[i][j];
                 if (value) {
                     inner_state[i][j].possible = {grid[i][j]};
@@ -21,9 +21,9 @@ void InitInner(Cell_t inner_state[9][9],const int grid[9][9]){
         m++;
     }
 }
-bool IsSolved(const Cell_t inner_state[9][9]) {
-    for (size_t i = 0; i < 9; i++) {
-        for (size_t j = 0; j < 9; j++) {
+bool IsSolved(const std::vector<std::vector<Cell_t>> &inner_state) {
+    for (size_t i = 0; i < inner_state.size(); i++) {
+        for (size_t j = 0; j < inner_state[0].size(); j++) {
             if (inner_state[i][j].possible.size() != 1) {
                 return false;
             }
@@ -32,8 +32,8 @@ bool IsSolved(const Cell_t inner_state[9][9]) {
     return true;
 }
 
-void EliminateInRow(const int &value, const int &row, Cell_t inner_state[9][9]) {
-    for (size_t i = 0; i < 9; i++) {
+void EliminateInRow(const int &value, const int &row, std::vector<std::vector<Cell_t>> &inner_state) {
+    for (size_t i = 0; i < inner_state.size(); i++) {
         if (inner_state[row][i].possible.size() != 1) {
             for (auto it = inner_state[row][i].possible.begin(); it != inner_state[row][i].possible.end(); ++it) {
                 if (value == *it) {
@@ -44,8 +44,8 @@ void EliminateInRow(const int &value, const int &row, Cell_t inner_state[9][9]) 
         }
     }
 }
-void EliminateInCol(const int &value, const int &col, Cell_t inner_state[9][9]) {
-    for (size_t i = 0; i < 9; i++) {
+void EliminateInCol(const int &value, const int &col, std::vector<std::vector<Cell_t>> &inner_state) {
+    for (size_t i = 0; i < inner_state.size(); i++) {
         if (inner_state[i][col].possible.size() == 1) {
             continue;
         }
@@ -57,7 +57,7 @@ void EliminateInCol(const int &value, const int &col, Cell_t inner_state[9][9]) 
         }
     }
 }
-void EliminateInBox(const int &value, const int &row, const int &col, Cell_t inner_state[9][9]){
+void EliminateInBox(const int &value, const int &row, const int &col, std::vector<std::vector<Cell_t>> &inner_state){
     int box_row = row - row % 3;
     int box_col = col - col % 3;
     for (size_t i = 0; i < 3; i++) {

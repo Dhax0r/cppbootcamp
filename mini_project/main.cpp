@@ -1,18 +1,13 @@
 #include <iostream>
-#include <iomanip>
 #include <vector>
 #include "solver.hpp"
 #include "eliminator.hpp"
 #include "print_sudoku.hpp"
 
-
-
-
 int main() {
-    
-    
-    //int box[3][3] = {{1, 2, 0},{4, 5, 6},{7, 8, 9}};
-    
+    const unsigned int rows = 9;
+    const unsigned int cols = 9;
+
     int grid[9][9] = {
                     {3, 0, 6, 5, 0, 8, 4, 0, 0},
                     {5, 2, 0, 0, 0, 0, 0, 0, 0},
@@ -36,9 +31,8 @@ int main() {
                     {0, 0, 4, 7, 5, 0, 6, 9, 0}
                     }; */
    
-    Cell_t inner_state[9][9];
+    std::vector<std::vector<Cell_t>> inner_state(rows, std::vector<Cell_t>(cols, Cell_t()));
    
-    //print_inner(inner_state);
     Print(grid);
     std::cout << "----------------------------------------" << std::endl;
     InitInner(inner_state, grid);
@@ -47,8 +41,7 @@ int main() {
     if (Solve(grid)) {
         Print(grid);
     }
- 
-     
+  
     return 0;
 }
 
