@@ -38,13 +38,14 @@ bool IsSolved(const std::vector<std::vector<Cell_t>> &inner_state) {
 void EliminateInRow(const int &value, const int &row,
                     std::vector<std::vector<Cell_t>> &inner_state) {
   for (size_t i = 0; i < inner_state.size(); i++) {
-    if (inner_state[row][i].possible.size() != 0) {
-      for (auto it = inner_state[row][i].possible.begin();
-           it != inner_state[row][i].possible.end(); ++it) {
+      std::vector<int> &possible_vec = inner_state[row][i].possible; // use reference of possible cuz I'm lazy
+    if (possible_vec.size() != 0) {
+      for (auto it = possible_vec.begin();
+           it != possible_vec.end(); ++it) {
         if (value == *it) {
-          inner_state[row][i].possible.erase(it);
-          if (inner_state[row][i].possible.size() == 1) {
-            AssignValue(row, i, inner_state[row][i].possible.at(0),
+          possible_vec.erase(it);
+          if (possible_vec.size() == 1) {
+            AssignValue(row, i, possible_vec.at(0),
                         inner_state);
           }
           break;
@@ -56,15 +57,16 @@ void EliminateInRow(const int &value, const int &row,
 void EliminateInCol(const int &value, const int &col,
                     std::vector<std::vector<Cell_t>> &inner_state) {
   for (size_t i = 0; i < inner_state.size(); i++) {
-    if (inner_state[i][col].possible.size() == 0) {
+    std::vector<int> &possible_vec = inner_state[i][col].possible; // use reference cuz I'm lazy
+    if (possible_vec.size() == 0) {
       continue;
     }
-    for (auto it = inner_state[i][col].possible.begin();
-         it != inner_state[i][col].possible.end(); ++it) {
+    for (auto it = possible_vec.begin();
+         it != possible_vec.end(); ++it) {
       if (value == *it) {
-        inner_state[i][col].possible.erase(it);
-        if (inner_state[i][col].possible.size() == 1) {
-          AssignValue(i, col, inner_state[i][col].possible.at(0), inner_state);
+        possible_vec.erase(it);
+        if (possible_vec.size() == 1) {
+          AssignValue(i, col, possible_vec.at(0), inner_state);
         }
         break;
       }
