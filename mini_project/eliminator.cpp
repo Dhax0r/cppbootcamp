@@ -27,7 +27,7 @@ void AssignValue(const size_t &row, const size_t &col, const int &value,
 bool IsSolved(const std::vector<std::vector<Cell_t>> &inner_state) {
   for (size_t i = 0; i < inner_state.size(); i++) {
     for (size_t j = 0; j < inner_state[0].size(); j++) {
-      if (inner_state[i][j].possible.size() != 1) {
+      if (inner_state[i][j].value == -1) {
         return false;
       }
     }
