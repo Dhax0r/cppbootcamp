@@ -19,4 +19,6 @@ void EliminateInBox(const int &value, const int &row, const int &col,
 bool IsSolved(const std::vector<std::vector<Cell_t>> &inner_state);
 void AssignValue(const size_t &row, const size_t &col, const int &value,
                  std::vector<std::vector<Cell_t>> &inner_state);
+void FindMinPeers(size_t &min_row, size_t &min_col,
+                  const std::vector<std::vector<Cell_t>> &inner_state);
 #endif  // ELIMINATOR_HPP_

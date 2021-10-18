@@ -96,3 +96,19 @@ void EliminateInBox(const int &value, const int &row, const int &col,
     }
   }
 }
+// Find the cell with lowest number of peers
+void FindMinPeers(size_t &min_row, size_t &min_col, const std::vector<std::vector<Cell_t>> &inner_state){
+    size_t min_possible = 9;
+    for (size_t row = 0; row < inner_state.size(); row++) {
+        for (size_t col = 0; col < inner_state[0].size(); col++) {
+            const std::vector<int> &possible_vec = inner_state[row][col].possible;
+            if (possible_vec.size() > 1) {
+                if (possible_vec.size() < min_possible) {
+                    min_possible = possible_vec.size();
+                    min_row = row;
+                    min_col = col;
+                }
+            }
+        }
+    }
+}
