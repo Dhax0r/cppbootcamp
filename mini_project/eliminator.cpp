@@ -3,24 +3,25 @@
 #include <iomanip>
 
 void InitInner(std::vector<std::vector<Cell_t>> &inner_state, const int grid[9][9]){
-    int m = 0;
-    while (m < 100 && !IsSolved(inner_state)) {
-        for (size_t i = 0; i < inner_state.size(); i++) {
-            for (size_t j = 0; j < inner_state[0].size(); j++) {
-                int value = grid[i][j];
-                if (value) {
-                    inner_state[i][j].possible = {grid[i][j]};
-                }
-                if (inner_state[i][j].possible.size() == 1) {
-                    EliminateInRow(inner_state[i][j].possible.at(0), i, inner_state);
-                    EliminateInCol(inner_state[i][j].possible.at(0), j, inner_state);
-                    EliminateInBox(inner_state[i][j].possible.at(0), i, j, inner_state);
-                }
+    for (size_t i = 0; i < inner_state.size(); i++) {
+        for (size_t j = 0; j < inner_state[0].size(); j++) {
+            int value = grid[i][j];
+            if (value) {
+                AssignValue(i,j,value, inner_state);
             }
+            
         }
-        m++;
     }
 }
+
+void AssignValue(const size_t &row, const size_t &col, const int &value, std::vector<std::vector<Cell_t>> &inner_state) {
+    inner_state[row][col].value = value;
+    inner_state[row][col].possible.clear();
+    EliminateInRow(value, row, inner_state);
+    EliminateInCol(value, col, inner_state);
+    EliminateInBox(value, row, col, inner_state);
+}
+
 bool IsSolved(const std::vector<std::vector<Cell_t>> &inner_state) {
     for (size_t i = 0; i < inner_state.size(); i++) {
         for (size_t j = 0; j < inner_state[0].size(); j++) {
@@ -38,6 +39,9 @@ void EliminateInRow(const int &value, const int &row, std::vector<std::vector<Ce
             for (auto it = inner_state[row][i].possible.begin(); it != inner_state[row][i].possible.end(); ++it) {
                 if (value == *it) {
                     inner_state[row][i].possible.erase(it);
+                    if (inner_state[row][i].possible.size() == 1) {
+                        AssignValue(row,i,inner_state[row][i].possible.at(0),inner_state);
+                    }
                     break;
                 }
             }
@@ -52,6 +56,9 @@ void EliminateInCol(const int &value, const int &col, std::vector<std::vector<Ce
         for (auto it = inner_state[i][col].possible.begin(); it != inner_state[i][col].possible.end(); ++it) {
             if (value == *it) {
                 inner_state[i][col].possible.erase(it);
+                if (inner_state[i][col].possible.size() == 1) {
+                    AssignValue(i, col, inner_state[i][col].possible.at(0), inner_state);
+                }
                 break;
             }
         }
@@ -69,6 +76,9 @@ void EliminateInBox(const int &value, const int &row, const int &col, std::vecto
             for (auto it = temp_vec->begin(); it != temp_vec->end(); ++it) {
                 if (value == *it) {
                     temp_vec->erase(it);
+                    if (temp_vec->size() == 1) {
+                        AssignValue(i, j, temp_vec->at(0), inner_state);
+                    }
                     break;
                 }
             }
