@@ -9,7 +9,6 @@ void InitInner(std::vector<std::vector<Cell_t>> &inner_state, const int grid[9][
             if (value) {
                 AssignValue(i,j,value, inner_state);
             }
-            
         }
     }
 }
@@ -35,7 +34,7 @@ bool IsSolved(const std::vector<std::vector<Cell_t>> &inner_state) {
 
 void EliminateInRow(const int &value, const int &row, std::vector<std::vector<Cell_t>> &inner_state) {
     for (size_t i = 0; i < inner_state.size(); i++) {
-        if (inner_state[row][i].possible.size() != 1) {
+        if (inner_state[row][i].possible.size() != 0) {
             for (auto it = inner_state[row][i].possible.begin(); it != inner_state[row][i].possible.end(); ++it) {
                 if (value == *it) {
                     inner_state[row][i].possible.erase(it);
@@ -50,7 +49,7 @@ void EliminateInRow(const int &value, const int &row, std::vector<std::vector<Ce
 }
 void EliminateInCol(const int &value, const int &col, std::vector<std::vector<Cell_t>> &inner_state) {
     for (size_t i = 0; i < inner_state.size(); i++) {
-        if (inner_state[i][col].possible.size() == 1) {
+        if (inner_state[i][col].possible.size() == 0) {
             continue;
         }
         for (auto it = inner_state[i][col].possible.begin(); it != inner_state[i][col].possible.end(); ++it) {
@@ -70,14 +69,14 @@ void EliminateInBox(const int &value, const int &row, const int &col, std::vecto
     for (size_t i = 0; i < 3; i++) {
         for (size_t j = 0; j < 3; j++) {
             std::vector<int> *temp_vec = &inner_state[box_row + i][box_col + j].possible;
-            if (temp_vec->size() == 1){
+            if (temp_vec->size() == 0){
                 continue;
             }
             for (auto it = temp_vec->begin(); it != temp_vec->end(); ++it) {
                 if (value == *it) {
                     temp_vec->erase(it);
                     if (temp_vec->size() == 1) {
-                        AssignValue(i, j, temp_vec->at(0), inner_state);
+                        AssignValue(box_row + i, box_col + j, temp_vec->at(0), inner_state);
                     }
                     break;
                 }
