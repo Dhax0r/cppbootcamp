@@ -10,14 +10,14 @@ typedef struct Cell {
 
 void InitInner(std::vector<std::vector<Cell_t>> &inner_state,
                const int grid[9][9]);
-void EliminateInRow(const int &value, const int &row,
+bool EliminateInRow(const int &value, const int &row,
                     std::vector<std::vector<Cell_t>> &inner_state);
-void EliminateInCol(const int &value, const int &col,
+bool EliminateInCol(const int &value, const int &col,
                     std::vector<std::vector<Cell_t>> &inner_state);
-void EliminateInBox(const int &value, const int &row, const int &col,
+bool EliminateInBox(const int &value, const int &row, const int &col,
                     std::vector<std::vector<Cell_t>> &inner_state);
 bool IsSolved(const std::vector<std::vector<Cell_t>> &inner_state);
-void AssignValue(const size_t &row, const size_t &col, const int &value,
+bool AssignValue(const size_t &row, const size_t &col, const int &value,
                  std::vector<std::vector<Cell_t>> &inner_state);
 void FindMinPeers(size_t &min_row, size_t &min_col,
                   const std::vector<std::vector<Cell_t>> &inner_state);

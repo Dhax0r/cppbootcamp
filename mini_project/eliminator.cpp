@@ -1,9 +1,7 @@
 #include "eliminator.hpp"
-
 #include <iomanip>
 #include <iostream>
 
-#include "print_sudoku.hpp"
 
 void InitInner(std::vector<std::vector<Cell_t>> &inner_state,
                const int grid[9][9]) {
@@ -26,31 +24,29 @@ bool BruteForce(std::vector<std::vector<Cell_t>> &inner_state) {
   size_t min_row, min_col;
   FindMinPeers(min_row, min_col, inner_copy);
   for (int c : inner_copy[min_row][min_col].possible) {
-    if (IsValid(min_row, min_col, c, inner_copy)) {
-    AssignValue(min_row, min_col, c, inner_copy);
-    } else {
+    if (!AssignValue(min_row, min_col, c, inner_copy)) {
       return false;
     }
-
-    Print(inner_copy);
     if (BruteForce(inner_copy)) {
       inner_state = inner_copy;
       return true;
     } else {
-      inner_copy = inner_state;
+      inner_copy = inner_state; // if value not correct reset inner_copy
     }
   }
   return false;
 }
 
-void AssignValue(const size_t &row, const size_t &col, const int &value,
+bool AssignValue(const size_t &row, const size_t &col, const int &value,
                  std::vector<std::vector<Cell_t>> &inner_state) {
+  if (!IsValid(row, col, value, inner_state)) {
+    return false;
+  }
   inner_state[row][col].value = value;
   inner_state[row][col].possible.clear();
-  Print(inner_state);
-  EliminateInRow(value, row, inner_state);
-  EliminateInCol(value, col, inner_state);
-  EliminateInBox(value, row, col, inner_state);
+  return EliminateInRow(value, row, inner_state) &&
+         EliminateInCol(value, col, inner_state) &&
+         EliminateInBox(value, row, col, inner_state);
 }
 
 bool IsSolved(const std::vector<std::vector<Cell_t>> &inner_state) {
@@ -64,7 +60,7 @@ bool IsSolved(const std::vector<std::vector<Cell_t>> &inner_state) {
   return true;
 }
 
-void EliminateInRow(const int &value, const int &row,
+bool EliminateInRow(const int &value, const int &row,
                     std::vector<std::vector<Cell_t>> &inner_state) {
   for (size_t i = 0; i < inner_state.size(); i++) {
     std::vector<int> &possible_vec =
@@ -74,17 +70,16 @@ void EliminateInRow(const int &value, const int &row,
         if (value == *it) {
           possible_vec.erase(it);
           if (possible_vec.size() == 1) {
-            
-              AssignValue(row, i, possible_vec.at(0), inner_state);
-           
+            return AssignValue(row, i, possible_vec.at(0), inner_state);
           }
           break;
         }
       }
     }
   }
+  return true;
 }
-void EliminateInCol(const int &value, const int &col,
+bool EliminateInCol(const int &value, const int &col,
                     std::vector<std::vector<Cell_t>> &inner_state) {
   for (size_t i = 0; i < inner_state.size(); i++) {
     std::vector<int> &possible_vec =
@@ -96,16 +91,15 @@ void EliminateInCol(const int &value, const int &col,
       if (value == *it) {
         possible_vec.erase(it);
         if (possible_vec.size() == 1) {
-          
-            AssignValue(i, col, possible_vec.at(0), inner_state);
-          
+          return AssignValue(i, col, possible_vec.at(0), inner_state);
         }
         break;
       }
     }
   }
+  return true;
 }
-void EliminateInBox(const int &value, const int &row, const int &col,
+bool EliminateInBox(const int &value, const int &row, const int &col,
                     std::vector<std::vector<Cell_t>> &inner_state) {
   int box_row = row - row % 3;
   int box_col = col - col % 3;
@@ -120,15 +114,15 @@ void EliminateInBox(const int &value, const int &row, const int &col,
         if (value == *it) {
           temp_vec->erase(it);
           if (temp_vec->size() == 1) {
-            
-              AssignValue(box_row + i, box_col + j, temp_vec->at(0),
-                          inner_state);
+            return AssignValue(box_row + i, box_col + j, temp_vec->at(0),
+                               inner_state);
           }
           break;
         }
       }
     }
   }
+  return true;
 }
 // Find the cell with lowest number of peers
 void FindMinPeers(size_t &min_row, size_t &min_col,
