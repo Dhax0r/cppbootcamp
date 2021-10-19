@@ -3,6 +3,8 @@
 #include <iomanip>
 #include <iostream>
 
+#include "print_sudoku.hpp"
+
 void InitInner(std::vector<std::vector<Cell_t>> &inner_state,
                const int grid[9][9]) {
   for (size_t i = 0; i < inner_state.size(); i++) {
@@ -13,12 +15,39 @@ void InitInner(std::vector<std::vector<Cell_t>> &inner_state,
       }
     }
   }
+  BruteForce(inner_state);
+}
+
+bool BruteForce(std::vector<std::vector<Cell_t>> &inner_state) {
+  if (IsSolved(inner_state)) {
+    return true;
+  }
+  std::vector<std::vector<Cell_t>> inner_copy = inner_state;
+  size_t min_row, min_col;
+  FindMinPeers(min_row, min_col, inner_copy);
+  for (int c : inner_copy[min_row][min_col].possible) {
+    if (IsValid(min_row, min_col, c, inner_copy)) {
+    AssignValue(min_row, min_col, c, inner_copy);
+    } else {
+      return false;
+    }
+
+    Print(inner_copy);
+    if (BruteForce(inner_copy)) {
+      inner_state = inner_copy;
+      return true;
+    } else {
+      inner_copy = inner_state;
+    }
+  }
+  return false;
 }
 
 void AssignValue(const size_t &row, const size_t &col, const int &value,
                  std::vector<std::vector<Cell_t>> &inner_state) {
   inner_state[row][col].value = value;
   inner_state[row][col].possible.clear();
+  Print(inner_state);
   EliminateInRow(value, row, inner_state);
   EliminateInCol(value, col, inner_state);
   EliminateInBox(value, row, col, inner_state);
@@ -38,15 +67,16 @@ bool IsSolved(const std::vector<std::vector<Cell_t>> &inner_state) {
 void EliminateInRow(const int &value, const int &row,
                     std::vector<std::vector<Cell_t>> &inner_state) {
   for (size_t i = 0; i < inner_state.size(); i++) {
-      std::vector<int> &possible_vec = inner_state[row][i].possible; // use reference of possible cuz I'm lazy
+    std::vector<int> &possible_vec =
+        inner_state[row][i].possible;  // use reference of possible cuz I'm lazy
     if (possible_vec.size() != 0) {
-      for (auto it = possible_vec.begin();
-           it != possible_vec.end(); ++it) {
+      for (auto it = possible_vec.begin(); it != possible_vec.end(); ++it) {
         if (value == *it) {
           possible_vec.erase(it);
           if (possible_vec.size() == 1) {
-            AssignValue(row, i, possible_vec.at(0),
-                        inner_state);
+            
+              AssignValue(row, i, possible_vec.at(0), inner_state);
+           
           }
           break;
         }
@@ -57,16 +87,18 @@ void EliminateInRow(const int &value, const int &row,
 void EliminateInCol(const int &value, const int &col,
                     std::vector<std::vector<Cell_t>> &inner_state) {
   for (size_t i = 0; i < inner_state.size(); i++) {
-    std::vector<int> &possible_vec = inner_state[i][col].possible; // use reference cuz I'm lazy
+    std::vector<int> &possible_vec =
+        inner_state[i][col].possible;  // use reference cuz I'm lazy
     if (possible_vec.size() == 0) {
       continue;
     }
-    for (auto it = possible_vec.begin();
-         it != possible_vec.end(); ++it) {
+    for (auto it = possible_vec.begin(); it != possible_vec.end(); ++it) {
       if (value == *it) {
         possible_vec.erase(it);
         if (possible_vec.size() == 1) {
-          AssignValue(i, col, possible_vec.at(0), inner_state);
+          
+            AssignValue(i, col, possible_vec.at(0), inner_state);
+          
         }
         break;
       }
@@ -88,7 +120,9 @@ void EliminateInBox(const int &value, const int &row, const int &col,
         if (value == *it) {
           temp_vec->erase(it);
           if (temp_vec->size() == 1) {
-            AssignValue(box_row + i, box_col + j, temp_vec->at(0), inner_state);
+            
+              AssignValue(box_row + i, box_col + j, temp_vec->at(0),
+                          inner_state);
           }
           break;
         }
@@ -97,18 +131,60 @@ void EliminateInBox(const int &value, const int &row, const int &col,
   }
 }
 // Find the cell with lowest number of peers
-void FindMinPeers(size_t &min_row, size_t &min_col, const std::vector<std::vector<Cell_t>> &inner_state){
-    size_t min_possible = 9;
-    for (size_t row = 0; row < inner_state.size(); row++) {
-        for (size_t col = 0; col < inner_state[0].size(); col++) {
-            const std::vector<int> &possible_vec = inner_state[row][col].possible;
-            if (possible_vec.size() > 1) {
-                if (possible_vec.size() < min_possible) {
-                    min_possible = possible_vec.size();
-                    min_row = row;
-                    min_col = col;
-                }
-            }
+void FindMinPeers(size_t &min_row, size_t &min_col,
+                  const std::vector<std::vector<Cell_t>> &inner_state) {
+  size_t min_possible = 9;
+  for (size_t row = 0; row < inner_state.size(); row++) {
+    for (size_t col = 0; col < inner_state[0].size(); col++) {
+      const std::vector<int> &possible_vec = inner_state[row][col].possible;
+      if (possible_vec.size() > 1) {
+        if (possible_vec.size() < min_possible) {
+          min_possible = possible_vec.size();
+          min_row = row;
+          min_col = col;
         }
+      }
     }
+  }
+}
+
+bool IsValidRow(const size_t &row, const int &value,
+                const std::vector<std::vector<Cell_t>> &inner_state) {
+  for (size_t i = 0; i < inner_state[0].size(); i++) {
+    if (inner_state[row][i].value == value) {
+      return false;
+    }
+  }
+  return true;
+}
+
+bool IsValidCol(const size_t &col, const int &value,
+                const std::vector<std::vector<Cell_t>> &inner_state) {
+  for (size_t i = 0; i < inner_state.size(); i++) {
+    if (inner_state[i][col].value == value) {
+      return false;
+    }
+  }
+  return true;
+}
+
+bool IsValidBox(const size_t &row, const size_t &col, const int &value,
+                const std::vector<std::vector<Cell_t>> &inner_state) {
+  size_t box_row = row - row % 3;
+  size_t box_col = col - col % 3;
+  for (size_t i = 0; i < 3; i++) {
+    for (size_t j = 0; j < 3; j++) {
+      if (inner_state[box_row + i][box_col + j].value == value) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+bool IsValid(const size_t &row, const size_t &col, const int &value,
+             const std::vector<std::vector<Cell_t>> &inner_state) {
+  return IsValidRow(row, value, inner_state) &&
+         IsValidCol(col, value, inner_state) &&
+         IsValidBox(row, col, value, inner_state);
 }

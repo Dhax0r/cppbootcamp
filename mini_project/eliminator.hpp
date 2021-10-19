@@ -21,4 +21,13 @@ void AssignValue(const size_t &row, const size_t &col, const int &value,
                  std::vector<std::vector<Cell_t>> &inner_state);
 void FindMinPeers(size_t &min_row, size_t &min_col,
                   const std::vector<std::vector<Cell_t>> &inner_state);
+bool BruteForce(std::vector<std::vector<Cell_t>> &);
+bool IsValidRow(const size_t &row, const int &value,
+                const std::vector<std::vector<Cell_t>> &inner_state);
+bool IsValidCol(const size_t &col, const int &value,
+                const std::vector<std::vector<Cell_t>> &inner_state);
+bool IsValidBox(const size_t &row, const size_t &col, const int &value,
+                const std::vector<std::vector<Cell_t>> &inner_state);
+bool IsValid(const size_t &row, const size_t &col, const int &value,
+               const std::vector<std::vector<Cell_t>> &inner_state);
 #endif  // ELIMINATOR_HPP_

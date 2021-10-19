@@ -31,6 +31,7 @@ int main() {
                     {0, 0, 4, 7, 5, 0, 6, 9, 0}
                     }; */
 
+
     std::vector<std::vector<Cell_t>> inner_state(
         rows, std::vector<Cell_t>(cols, Cell_t()));
 
@@ -38,6 +39,9 @@ int main() {
     std::cout << "----------------------------------------" << std::endl;
     InitInner(inner_state, grid);
     Print(inner_state);
+    size_t x,y;
+    FindMinPeers(x, y, inner_state);
+    std::cout << "min x: " << x << " min y: " << y << std::endl;
 
     if (Solve(grid)) {
       Print(grid);
