@@ -10,7 +10,7 @@ int main() {
     const unsigned int rows = 9;
     const unsigned int cols = 9;
 
-    /* int grid[9][9] = {
+    int grid[9][9] = {
                     {3, 0, 6, 5, 0, 8, 4, 0, 0},
                     {5, 2, 0, 0, 0, 0, 0, 0, 0},
                     {0, 8, 7, 0, 0, 0, 0, 3, 1},
@@ -20,7 +20,7 @@ int main() {
                     {1, 3, 0, 0, 0, 0, 2, 5, 0},
                     {0, 0, 0, 0, 0, 0, 0, 7, 4},
                     {0, 0, 5, 2, 0, 6, 3, 0, 0}
-                    }; */
+                    };
     /* int grid[9][9] = {
                     {7, 0, 3, 1, 0, 0, 9, 0, 4},
                     {4, 0, 5, 0, 0, 0, 0, 7, 3},
@@ -32,7 +32,7 @@ int main() {
                     {0, 0, 6, 2, 0, 8, 5, 0, 0},
                     {0, 0, 4, 7, 5, 0, 6, 9, 0}
                     }; */
-int grid [9][9] = 
+/* int grid [9][9] = 
 {{8,5,0,0,0,2,4,0,0},
  {7,2,0,0,0,0,0,0,9},
  {0,0,4,0,0,0,0,0,0},
@@ -41,7 +41,7 @@ int grid [9][9] =
  {0,4,0,0,0,0,0,0,0},
  {0,0,0,0,8,0,0,7,0},
  {0,1,7,0,0,0,0,0,0},
- {0,0,0,0,3,6,0,4,0}};
+ {0,0,0,0,3,6,0,4,0}}; */
 
 // Super hard sudoku
 /* int grid[9][9] = {{0 ,0, 0, 0, 0, 5, 0, 8, 0},
@@ -68,9 +68,13 @@ int grid [9][9] =
 
     std::cout << "sudoku solved in " << duration_time.count() << "ms"<< std::endl;
     
-
+    std::cout << "---old bruteforce---" << std::endl;
+    start_time = std::chrono::high_resolution_clock::now();
     if (Solve(grid)) {
+      end_time = std::chrono::high_resolution_clock::now();
       Print(grid);
+      duration_time = end_time - start_time;
+      std::cout << "sudoku solved in " << duration_time.count() << "ms" << std::endl;
     }
 
     return 0;

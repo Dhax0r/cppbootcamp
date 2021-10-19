@@ -1,7 +1,7 @@
 #include "eliminator.hpp"
+
 #include <iomanip>
 #include <iostream>
-
 
 void InitInner(std::vector<std::vector<Cell_t>> &inner_state,
                const int grid[9][9]) {
@@ -13,7 +13,9 @@ void InitInner(std::vector<std::vector<Cell_t>> &inner_state,
       }
     }
   }
-  BruteForce(inner_state);
+  if (!IsSolved(inner_state)) {
+    BruteForce(inner_state);
+  }
 }
 
 bool BruteForce(std::vector<std::vector<Cell_t>> &inner_state) {
@@ -31,7 +33,7 @@ bool BruteForce(std::vector<std::vector<Cell_t>> &inner_state) {
       inner_state = inner_copy;
       return true;
     } else {
-      inner_copy = inner_state; // if value not correct reset inner_copy
+      inner_copy = inner_state;  // if value not correct reset inner_copy
     }
   }
   return false;
