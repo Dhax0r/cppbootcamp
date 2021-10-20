@@ -27,7 +27,8 @@ bool BruteForce(std::vector<std::vector<Cell_t>> &inner_state) {
   FindMinPeers(min_row, min_col, inner_copy);
   for (int c : inner_copy[min_row][min_col].possible) {
     if (!AssignValue(min_row, min_col, c, inner_copy)) {
-      return false;
+      inner_copy = inner_state;
+      continue;
     }
     if (BruteForce(inner_copy)) {
       inner_state = inner_copy;
