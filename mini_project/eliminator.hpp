@@ -1,5 +1,6 @@
 #ifndef ELIMINATOR_HPP_
 #define ELIMINATOR_HPP_
+#include <string>
 #include <vector>
 
 typedef struct Cell {
@@ -29,5 +30,13 @@ bool IsValidCol(const size_t &col, const int &value,
 bool IsValidBox(const size_t &row, const size_t &col, const int &value,
                 const std::vector<std::vector<Cell_t>> &inner_state);
 bool IsValid(const size_t &row, const size_t &col, const int &value,
-               const std::vector<std::vector<Cell_t>> &inner_state);
+             const std::vector<std::vector<Cell_t>> &inner_state);
+void InitInner(const std::string &s,
+               std::vector<std::vector<Cell_t>> &inner_state);
+bool UniqueInRow(const int &value, const size_t &row, const size_t &col,
+                 std::vector<std::vector<Cell_t>> inner_state);
+bool UniqueInCol(const int &value, const size_t &row, const size_t &col,
+                 const std::vector<std::vector<Cell_t>> &inner_state);
+bool UniqueInBox(const int &value, const size_t &row, const size_t &col,
+                 const std::vector<std::vector<Cell_t>> &inner_state);
 #endif  // ELIMINATOR_HPP_

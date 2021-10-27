@@ -2,6 +2,7 @@
 #include <vector>
 #include <chrono>
 
+
 #include "solver.hpp"
 #include "eliminator.hpp"
 #include "print_sudoku.hpp"
@@ -66,13 +67,20 @@ int main() {
 
     std::vector<std::vector<Cell_t>> inner_state(
         rows, std::vector<Cell_t>(cols, Cell_t()));
-
+    std::string s = "..6.9.2.....7.2....9.5.8.7.9...3...675.....191...4...5.1.3.9.8....2.1.....9.8.1..";
     Print(grid);
     std::cout << "----------------------------------------" << std::endl;
     auto start_time = std::chrono::high_resolution_clock::now();
-    InitInner(inner_state, grid);
+    InitInner(s, inner_state);
     auto end_time = std::chrono::high_resolution_clock::now();
     Print(inner_state);
+    std::chrono::duration<double, std::milli> duration_time = end_time - start_time;
+    std::cout << "sudoku solved in " << duration_time.count() << "ms"<< std::endl;
+    
+    /* auto start_time = std::chrono::high_resolution_clock::now();
+    InitInner(inner_state, grid);
+    auto end_time = std::chrono::high_resolution_clock::now();
+    Print(inner_state); 
 
     std::chrono::duration<double, std::milli> duration_time = end_time - start_time;
 
@@ -86,6 +94,6 @@ int main() {
       duration_time = end_time - start_time;
       std::cout << "sudoku solved in " << duration_time.count() << "ms" << std::endl;
     }
-
+*/
     return 0;
 }

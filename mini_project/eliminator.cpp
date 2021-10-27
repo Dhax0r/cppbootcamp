@@ -1,7 +1,8 @@
 #include "eliminator.hpp"
-
+#include "print_sudoku.hpp"
 #include <iomanip>
 #include <iostream>
+
 
 void InitInner(std::vector<std::vector<Cell_t>> &inner_state,
                const int grid[9][9]) {
@@ -13,8 +14,19 @@ void InitInner(std::vector<std::vector<Cell_t>> &inner_state,
       }
     }
   }
-  if (!IsSolved(inner_state)) {
+  /* if (!IsSolved(inner_state)) {
     BruteForce(inner_state);
+  } */
+}
+
+void InitInner(const std::string &s, std::vector<std::vector<Cell_t>> &inner_state) {
+  for (size_t i = 0; i < s.size(); i++) {
+    size_t r = i/9;
+    size_t c = i%9;
+    if (s[i] != '.') {
+      int value = s[i] - '0';
+      AssignValue(r, c, value, inner_state);
+    }
   }
 }
 
@@ -45,11 +57,32 @@ bool AssignValue(const size_t &row, const size_t &col, const int &value,
   if (!IsValid(row, col, value, inner_state)) {
     return false;
   }
+  
   inner_state[row][col].value = value;
   inner_state[row][col].possible.clear();
-  return EliminateInRow(value, row, inner_state) &&
-         EliminateInCol(value, col, inner_state) &&
-         EliminateInBox(value, row, col, inner_state);
+  EliminateInRow(value, row, inner_state); 
+  EliminateInCol(value, col, inner_state);
+  EliminateInBox(value, row, col, inner_state);
+
+  for (size_t i = 0; i < 81; i++) {
+    if (inner_state[i/9][i%9].value != -1){
+      continue;
+    }
+    for (auto p : inner_state[i/9][i%9].possible) {
+      if (UniqueInRow(p, i/9, i%9, inner_state)) {
+        AssignValue(i/9, i%9, p, inner_state);
+      }
+      
+      if (UniqueInCol(p, i/9, i%9, inner_state)) {
+        AssignValue(i/9, i%9, p, inner_state);
+      }
+      if (UniqueInBox(p, i/9, i%9, inner_state)) {
+        AssignValue(i/9, i%9, p, inner_state);
+      }
+    }
+  }
+  
+         return true;
 }
 
 bool IsSolved(const std::vector<std::vector<Cell_t>> &inner_state) {
@@ -82,6 +115,20 @@ bool EliminateInRow(const int &value, const int &row,
   }
   return true;
 }
+
+bool UniqueInRow(const int &value, const size_t &row, const size_t &col, std::vector<std::vector<Cell_t>> inner_state) {
+  for (size_t i = 0; i < 9; i++) {
+    if (i == col) {
+      continue;
+    }
+    for (auto p : inner_state[row][i].possible) {
+      if (p == value || inner_state[row][i].value == value) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
 bool EliminateInCol(const int &value, const int &col,
                     std::vector<std::vector<Cell_t>> &inner_state) {
   for (size_t i = 0; i < inner_state.size(); i++) {
@@ -95,13 +142,27 @@ bool EliminateInCol(const int &value, const int &col,
         possible_vec.erase(it);
         if (possible_vec.size() == 1) {
           return AssignValue(i, col, possible_vec.at(0), inner_state);
-        }
+        }      
         break;
       }
     }
   }
   return true;
 }
+bool UniqueInCol(const int &value, const size_t &row, const size_t &col, const std::vector<std::vector<Cell_t>> &inner_state) {
+  for (size_t i = 0; i < 9; i++) {
+    if (i == row) {
+      continue;
+    }
+    for (auto p : inner_state[i][col].possible) {
+      if (p == value) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+//void UniquePeer()
 bool EliminateInBox(const int &value, const int &row, const int &col,
                     std::vector<std::vector<Cell_t>> &inner_state) {
   int box_row = row - row % 3;
@@ -127,6 +188,25 @@ bool EliminateInBox(const int &value, const int &row, const int &col,
   }
   return true;
 }
+
+bool UniqueInBox(const int &value, const size_t &row, const size_t &col, const std::vector<std::vector<Cell_t>> &inner_state) {
+  size_t box_row = row - row % 3;
+  size_t box_col = col - col % 3;
+  for (size_t i = 0; i < 3; i++) {
+    for (size_t j = 0; j < 3; j++) {
+      if ((box_row + i) == row && (box_col + j) == col) {
+        continue;
+      }
+      for (auto p : inner_state[box_row + i][box_col + j].possible) {
+        if (p == value) {
+          return false;
+        }
+      }
+    }
+  }
+return true;
+}  
+
 // Find the cell with lowest number of peers
 void FindMinPeers(size_t &min_row, size_t &min_col,
                   const std::vector<std::vector<Cell_t>> &inner_state) {
