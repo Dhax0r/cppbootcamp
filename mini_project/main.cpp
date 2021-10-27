@@ -65,7 +65,7 @@ int main() {
                   {0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,4},
                   {0 ,0, 0, 0, 0, 0, 0, 0, 0}}; */
 
-    std::vector<std::vector<Cell_t>> inner_state(
+    Grid_t inner_state(
         rows, std::vector<Cell_t>(cols, Cell_t()));
     std::string s = "..6.9.2.....7.2....9.5.8.7.9...3...675.....191...4...5.1.3.9.8....2.1.....9.8.1..";
     Print(grid);

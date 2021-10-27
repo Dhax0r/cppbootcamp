@@ -4,7 +4,7 @@
 #include <iostream>
 
 
-void InitInner(std::vector<std::vector<Cell_t>> &inner_state,
+void InitInner(Grid_t &inner_state,
                const int grid[9][9]) {
   for (size_t i = 0; i < inner_state.size(); i++) {
     for (size_t j = 0; j < inner_state[0].size(); j++) {
@@ -19,7 +19,7 @@ void InitInner(std::vector<std::vector<Cell_t>> &inner_state,
   } */
 }
 
-void InitInner(const std::string &s, std::vector<std::vector<Cell_t>> &inner_state) {
+void InitInner(const std::string &s, Grid_t &inner_state) {
   for (size_t i = 0; i < s.size(); i++) {
     size_t r = i/9;
     size_t c = i%9;
@@ -30,11 +30,11 @@ void InitInner(const std::string &s, std::vector<std::vector<Cell_t>> &inner_sta
   }
 }
 
-bool BruteForce(std::vector<std::vector<Cell_t>> &inner_state) {
+bool BruteForce(Grid_t &inner_state) {
   if (IsSolved(inner_state)) {
     return true;
   }
-  std::vector<std::vector<Cell_t>> inner_copy = inner_state;
+  Grid_t inner_copy = inner_state;
   size_t min_row, min_col;
   FindMinPeers(min_row, min_col, inner_copy);
   for (int c : inner_copy[min_row][min_col].possible) {
@@ -53,7 +53,7 @@ bool BruteForce(std::vector<std::vector<Cell_t>> &inner_state) {
 }
 
 bool AssignValue(const size_t &row, const size_t &col, const int &value,
-                 std::vector<std::vector<Cell_t>> &inner_state) {
+                 Grid_t &inner_state) {
   if (!IsValid(row, col, value, inner_state)) {
     return false;
   }
@@ -63,29 +63,13 @@ bool AssignValue(const size_t &row, const size_t &col, const int &value,
   EliminateInRow(value, row, inner_state); 
   EliminateInCol(value, col, inner_state);
   EliminateInBox(value, row, col, inner_state);
-
-  for (size_t i = 0; i < 81; i++) {
-    if (inner_state[i/9][i%9].value != -1){
-      continue;
-    }
-    for (auto p : inner_state[i/9][i%9].possible) {
-      if (UniqueInRow(p, i/9, i%9, inner_state)) {
-        AssignValue(i/9, i%9, p, inner_state);
-      }
-      
-      if (UniqueInCol(p, i/9, i%9, inner_state)) {
-        AssignValue(i/9, i%9, p, inner_state);
-      }
-      if (UniqueInBox(p, i/9, i%9, inner_state)) {
-        AssignValue(i/9, i%9, p, inner_state);
-      }
-    }
-  }
+  UniquePeer(inner_state);
+  
   
          return true;
 }
 
-bool IsSolved(const std::vector<std::vector<Cell_t>> &inner_state) {
+bool IsSolved(const Grid_t &inner_state) {
   for (size_t i = 0; i < inner_state.size(); i++) {
     for (size_t j = 0; j < inner_state[0].size(); j++) {
       if (inner_state[i][j].value == -1) {
@@ -97,7 +81,7 @@ bool IsSolved(const std::vector<std::vector<Cell_t>> &inner_state) {
 }
 
 bool EliminateInRow(const int &value, const int &row,
-                    std::vector<std::vector<Cell_t>> &inner_state) {
+                    Grid_t &inner_state) {
   for (size_t i = 0; i < inner_state.size(); i++) {
     std::vector<int> &possible_vec =
         inner_state[row][i].possible;  // use reference of possible cuz I'm lazy
@@ -116,7 +100,7 @@ bool EliminateInRow(const int &value, const int &row,
   return true;
 }
 
-bool UniqueInRow(const int &value, const size_t &row, const size_t &col, std::vector<std::vector<Cell_t>> inner_state) {
+bool UniqueInRow(const int &value, const size_t &row, const size_t &col, Grid_t inner_state) {
   for (size_t i = 0; i < 9; i++) {
     if (i == col) {
       continue;
@@ -130,7 +114,7 @@ bool UniqueInRow(const int &value, const size_t &row, const size_t &col, std::ve
   return true;
 }
 bool EliminateInCol(const int &value, const int &col,
-                    std::vector<std::vector<Cell_t>> &inner_state) {
+                    Grid_t &inner_state) {
   for (size_t i = 0; i < inner_state.size(); i++) {
     std::vector<int> &possible_vec =
         inner_state[i][col].possible;  // use reference cuz I'm lazy
@@ -149,7 +133,7 @@ bool EliminateInCol(const int &value, const int &col,
   }
   return true;
 }
-bool UniqueInCol(const int &value, const size_t &row, const size_t &col, const std::vector<std::vector<Cell_t>> &inner_state) {
+bool UniqueInCol(const int &value, const size_t &row, const size_t &col, const Grid_t &inner_state) {
   for (size_t i = 0; i < 9; i++) {
     if (i == row) {
       continue;
@@ -162,9 +146,26 @@ bool UniqueInCol(const int &value, const size_t &row, const size_t &col, const s
   }
   return true;
 }
-//void UniquePeer()
+void UniquePeer(Grid_t &inner_state) {
+for (size_t i = 0; i < 81; i++) {
+    if (inner_state[i/9][i%9].value != -1){
+      continue;
+    }
+    for (auto p : inner_state[i/9][i%9].possible) {
+      if (UniqueInRow(p, i/9, i%9, inner_state)) {
+        AssignValue(i/9, i%9, p, inner_state);
+      }
+      if (UniqueInCol(p, i/9, i%9, inner_state)) {
+        AssignValue(i/9, i%9, p, inner_state);
+      }
+      if (UniqueInBox(p, i/9, i%9, inner_state)) {
+        AssignValue(i/9, i%9, p, inner_state);
+      }
+    }
+  }
+}
 bool EliminateInBox(const int &value, const int &row, const int &col,
-                    std::vector<std::vector<Cell_t>> &inner_state) {
+                    Grid_t &inner_state) {
   int box_row = row - row % 3;
   int box_col = col - col % 3;
   for (size_t i = 0; i < 3; i++) {
@@ -189,7 +190,7 @@ bool EliminateInBox(const int &value, const int &row, const int &col,
   return true;
 }
 
-bool UniqueInBox(const int &value, const size_t &row, const size_t &col, const std::vector<std::vector<Cell_t>> &inner_state) {
+bool UniqueInBox(const int &value, const size_t &row, const size_t &col, const Grid_t &inner_state) {
   size_t box_row = row - row % 3;
   size_t box_col = col - col % 3;
   for (size_t i = 0; i < 3; i++) {
@@ -209,7 +210,7 @@ return true;
 
 // Find the cell with lowest number of peers
 void FindMinPeers(size_t &min_row, size_t &min_col,
-                  const std::vector<std::vector<Cell_t>> &inner_state) {
+                  const Grid_t &inner_state) {
   size_t min_possible = 9;
   for (size_t row = 0; row < inner_state.size(); row++) {
     for (size_t col = 0; col < inner_state[0].size(); col++) {
@@ -226,7 +227,7 @@ void FindMinPeers(size_t &min_row, size_t &min_col,
 }
 
 bool IsValidRow(const size_t &row, const int &value,
-                const std::vector<std::vector<Cell_t>> &inner_state) {
+                const Grid_t &inner_state) {
   for (size_t i = 0; i < inner_state[0].size(); i++) {
     if (inner_state[row][i].value == value) {
       return false;
@@ -236,7 +237,7 @@ bool IsValidRow(const size_t &row, const int &value,
 }
 
 bool IsValidCol(const size_t &col, const int &value,
-                const std::vector<std::vector<Cell_t>> &inner_state) {
+                const Grid_t &inner_state) {
   for (size_t i = 0; i < inner_state.size(); i++) {
     if (inner_state[i][col].value == value) {
       return false;
@@ -246,7 +247,7 @@ bool IsValidCol(const size_t &col, const int &value,
 }
 
 bool IsValidBox(const size_t &row, const size_t &col, const int &value,
-                const std::vector<std::vector<Cell_t>> &inner_state) {
+                const Grid_t &inner_state) {
   size_t box_row = row - row % 3;
   size_t box_col = col - col % 3;
   for (size_t i = 0; i < 3; i++) {
@@ -260,7 +261,7 @@ bool IsValidBox(const size_t &row, const size_t &col, const int &value,
 }
 
 bool IsValid(const size_t &row, const size_t &col, const int &value,
-             const std::vector<std::vector<Cell_t>> &inner_state) {
+             const Grid_t &inner_state) {
   return IsValidRow(row, value, inner_state) &&
          IsValidCol(col, value, inner_state) &&
          IsValidBox(row, col, value, inner_state);
