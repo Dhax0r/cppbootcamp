@@ -2,7 +2,6 @@
 #include <vector>
 #include <chrono>
 
-
 #include "solver.hpp"
 #include "eliminator.hpp"
 #include "print_sudoku.hpp"
