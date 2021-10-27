@@ -4,7 +4,7 @@
 #include <iostream>
 
 
-void InitInner(Grid_t &inner_state,
+void Solve(Grid_t &inner_state,
                const int grid[9][9]) {
   for (size_t i = 0; i < inner_state.size(); i++) {
     for (size_t j = 0; j < inner_state[0].size(); j++) {
@@ -19,7 +19,7 @@ void InitInner(Grid_t &inner_state,
   } */
 }
 
-void InitInner(const std::string &s, Grid_t &inner_state) {
+void Solve(const std::string &s, Grid_t &inner_state) {
   for (size_t i = 0; i < s.size(); i++) {
     size_t r = i/9;
     size_t c = i%9;
@@ -121,7 +121,6 @@ bool EliminateInCol(const int &value, const int &col,
   }
   return true;
 }
-
 
 //Eliminate value in box
 bool EliminateInBox(const int &value, const int &row, const int &col,

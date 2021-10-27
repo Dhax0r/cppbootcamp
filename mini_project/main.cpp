@@ -71,7 +71,7 @@ int main() {
     Print(grid);
     std::cout << "----------------------------------------" << std::endl;
     auto start_time = std::chrono::high_resolution_clock::now();
-    InitInner(s, inner_state);
+    Solve(s, inner_state);
     auto end_time = std::chrono::high_resolution_clock::now();
     Print(inner_state);
     std::chrono::duration<double, std::milli> duration_time = end_time - start_time;

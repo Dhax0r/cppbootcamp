@@ -10,7 +10,7 @@ typedef struct Cell {
 } Cell_t;
 typedef std::vector<std::vector<Cell_t>> Grid_t;
 
-void InitInner(Grid_t &inner_state,
+void Solve(Grid_t &inner_state,
                const int grid[9][9]);
 bool EliminateInRow(const int &value, const int &row,
                     Grid_t &inner_state);
@@ -32,7 +32,7 @@ bool IsValidBox(const size_t &row, const size_t &col, const int &value,
                 const Grid_t &inner_state);
 bool IsValid(const size_t &row, const size_t &col, const int &value,
              const Grid_t &inner_state);
-void InitInner(const std::string &s,
+void Solve(const std::string &s,
                Grid_t &inner_state);
 bool UniqueInRow(const int &value, const size_t &row, const size_t &col,
                  Grid_t inner_state);
