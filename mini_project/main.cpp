@@ -43,6 +43,8 @@ int main() {
  {0,1,7,0,0,0,0,0,0},
  {0,0,0,0,3,6,0,4,0}}; */
 
+ //"85...24..72......9..4.........1.7..23.5...9...4...........8..7..17..........36.4."
+
  int grid[9][9] = {{0, 0, 0, 0, 0, 0, 0, 0, 0},
                     {0, 0, 0, 0, 0, 3, 0, 8, 5},
                     {0, 0, 1, 0, 2, 0, 0, 0, 0},
@@ -64,9 +66,11 @@ int main() {
                   {0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,4},
                   {0 ,0, 0, 0, 0, 0, 0, 0, 0}}; */
 
-    Grid_t inner_state(
-        rows, std::vector<Cell_t>(cols, Cell_t()));
-    std::string s = "..6.9.2.....7.2....9.5.8.7.9...3...675.....191...4...5.1.3.9.8....2.1.....9.8.1..";
+    /* Grid_t inner_state(
+        rows, std::vector<Cell_t>(cols, Cell_t())); */
+        Grid_t inner_state;
+    //std::string s = "..6.9.2.....7.2....9.5.8.7.9...3...675.....191...4...5.1.3.9.8....2.1.....9.8.1..";
+    std::string s = "..............3.85..1.2.......5.7.....4...1...9.......5......73..2.1........4...9";
     Print(grid);
     std::cout << "----------------------------------------" << std::endl;
     auto start_time = std::chrono::high_resolution_clock::now();
@@ -76,23 +80,6 @@ int main() {
     std::chrono::duration<double, std::milli> duration_time = end_time - start_time;
     std::cout << "sudoku solved in " << duration_time.count() << "ms"<< std::endl;
     
-    /* auto start_time = std::chrono::high_resolution_clock::now();
-    InitInner(inner_state, grid);
-    auto end_time = std::chrono::high_resolution_clock::now();
-    Print(inner_state); 
-
-    std::chrono::duration<double, std::milli> duration_time = end_time - start_time;
-
-    std::cout << "sudoku solved in " << duration_time.count() << "ms"<< std::endl;
     
-    std::cout << "---old bruteforce---" << std::endl;
-    start_time = std::chrono::high_resolution_clock::now();
-    if (Solve(grid)) {
-      end_time = std::chrono::high_resolution_clock::now();
-      Print(grid);
-      duration_time = end_time - start_time;
-      std::cout << "sudoku solved in " << duration_time.count() << "ms" << std::endl;
-    }
-*/
     return 0;
 }

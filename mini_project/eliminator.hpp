@@ -22,7 +22,7 @@ void FindMinPeers(size_t &min_row, size_t &min_col,
                   const Grid_t &inner_state);
 bool BruteForce(Grid_t &);
 
-void Eliminate(const size_t &row, const size_t &col, const int &value, Grid_t &inner_state);
+bool Eliminate(const size_t &row, const size_t &col, const int &value, Grid_t &inner_state);
 
 
 
